@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Theme for the Splash Screen -->
+    <style name="Theme.SplashScreen" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_background</item> <!-- Background image for splash screen -->
+        <item name="android:windowFullscreen">true</item> <!-- Enables fullscreen mode -->
+        <item name="android:windowNoTitle">true</item> <!-- Removes the title bar -->
+    </style>
 
-    <style name="Theme.Camera" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- Main application theme -->
+    <style name="Theme.Camera" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">#FF6F00</item> <!-- Primary color (Fire Orange) -->
+        <item name="colorPrimaryVariant">#E65100</item> <!-- Darker shade of primary color -->
+        <item name="colorOnPrimary">#FFFFFF</item> <!-- Text color on primary background -->
+        <item name="android:statusBarColor">#E65100</item> <!-- Status bar color -->
+        <item name="android:navigationBarColor">#000000</item> <!-- Navigation bar color -->
+        <item name="android:windowBackground">#FF6F00</item> <!-- Default background color -->
+    </style>
 </resources>
