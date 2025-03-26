@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Declare that the app requires access to any available camera hardware -->
     <uses-feature android:name="android.hardware.camera.any" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!-- Permissions required for the app -->
+    <uses-permission android:name="android.permission.CAMERA" />  <!-- Camera access -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />  <!-- Audio recording for video -->
+
+    <!-- Permission to write to external storage (limited to API 28 and below) -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
-    <application
 
+    <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -17,18 +23,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Camera"
         tools:targetApi="31">
+
+        <!-- SplashActivity: The first screen shown when the app launches -->
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.SplashScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />  <!-- Marks as the main entry point -->
+                <category android:name="android.intent.category.LAUNCHER" />  <!-- Adds it to the app launcher -->
+            </intent-filter>
+        </activity>
+
+        <!-- MainActivity: The main screen of the application -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.Camera">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
-    </application
-        >
+
+    </application>
 
 </manifest>
