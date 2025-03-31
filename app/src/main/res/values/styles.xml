@@ -1,0 +1,14 @@
+<resources>
+    <style name="ButtonStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@drawable/button_bg</item> <!-- Sử dụng drawable -->
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:elevation">4dp</item> <!-- Hiệu ứng nổi -->
+    </style>
+
+    <style name="ButtonStyleRed" parent="ButtonStyle">
+        <item name="android:background">@drawable/button_bg_red</item>
+    </style>
+</resources>

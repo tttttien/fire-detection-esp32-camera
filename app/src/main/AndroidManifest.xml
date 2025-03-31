@@ -8,12 +8,14 @@
     <!-- Permissions required for the app -->
     <uses-permission android:name="android.permission.CAMERA" />  <!-- Camera access -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />  <!-- Audio recording for video -->
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <!-- Permission to write to external storage (limited to API 28 and below) -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
 
     <application
+        android:networkSecurityConfig="@xml/network_security_config"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -36,11 +38,13 @@
         </activity>
 
         <!-- MainActivity: The main screen of the application -->
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:theme="@style/Theme.Camera">
-        </activity>
+        <activity android:name=".MainActivity" android:exported="true" />
+<!--        &lt;!&ndash; ESP32CAMACTIVITY &ndash;&gt;-->
+<!--        <activity android:name=".Esp32CamActivity" android:exported="true" />-->
+
+        <!-- PhoneCameraActivity -->
+        <activity android:name=".PhoneCameraActivity" android:exported="true" />
+
 
     </application>
 
