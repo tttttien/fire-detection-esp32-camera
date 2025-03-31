@@ -11,7 +11,7 @@ class MainActivity : ComponentActivity() {
         setContentView(R.layout.activity_main)
 
 //        setupButton(R.id.btnMainScreen) { /* Load màn hình chính */ }
-//        setupButton(R.id.btnEsp32Cam, Esp32CamActivity::class.java)
+        setupButton(R.id.btnEsp32Cam, Esp32CamActivity::class.java)
         setupButton(R.id.btnPhoneCam, PhoneCameraActivity::class.java)
 //        setupButton(R.id.btnFireSafety, FireSafetyActivity::class.java)
     }

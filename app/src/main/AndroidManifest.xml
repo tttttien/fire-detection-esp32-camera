@@ -39,8 +39,8 @@
 
         <!-- MainActivity: The main screen of the application -->
         <activity android:name=".MainActivity" android:exported="true" />
-<!--        &lt;!&ndash; ESP32CAMACTIVITY &ndash;&gt;-->
-<!--        <activity android:name=".Esp32CamActivity" android:exported="true" />-->
+        <!-- ESP32CAMACTIVITY -->
+        <activity android:name=".Esp32CamActivity" android:exported="true" />
 
         <!-- PhoneCameraActivity -->
         <activity android:name=".PhoneCameraActivity" android:exported="true" />
