@@ -24,6 +24,6 @@ class SplashActivity : AppCompatActivity() {
 
             // Close SplashActivity to prevent users from navigating back to it
             finish()
-        }, 4000) // Display time: 4 seconds
+        }, 10000) // Display time: 4 seconds
     }
 }
