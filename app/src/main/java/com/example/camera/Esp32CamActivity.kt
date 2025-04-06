@@ -36,7 +36,7 @@ class Esp32CamActivity : ComponentActivity() {
 
         setupWebView()
 
-        webView.loadUrl("http://192.168.60.126/stream") // Update the ESP32 stream URL
+        webView.loadUrl("http://192.168.1.64/stream") // Update the ESP32 stream URL
 
         handler.postDelayed(frameCaptureRunnable, frameCaptureInterval)
     }
