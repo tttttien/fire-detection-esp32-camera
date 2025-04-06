@@ -15,9 +15,3 @@ data class FireResponse(
     @SerializedName("height")
     val height: Int
 )
-
-
-
-
-
-
