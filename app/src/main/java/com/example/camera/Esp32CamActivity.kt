@@ -6,12 +6,14 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import android.widget.ImageView
-import android.widget.Toast
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.ComponentActivity
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -20,12 +22,14 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.ByteArrayOutputStream
 
+
 class Esp32CamActivity : ComponentActivity() {
 
     private lateinit var webView: WebView
     private lateinit var fireMaskImageView: ImageView
     private val handler = Handler(Looper.getMainLooper())
     private val frameCaptureInterval: Long = 2000 // Capture frame every 2 seconds
+    private var firebaseDatabase: DatabaseReference? = null // Firebase database reference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,9 +38,12 @@ class Esp32CamActivity : ComponentActivity() {
         webView = findViewById(R.id.webView)
         fireMaskImageView = findViewById(R.id.fireMaskImageView)
 
+        // Initialize Firebase Realtime Database
+        firebaseDatabase = FirebaseDatabase.getInstance().getReference("fire_masks");
+
         setupWebView()
 
-        webView.loadUrl("http://192.168.1.64/stream") // Update the ESP32 stream URL
+        webView.loadUrl("http://192.168.51.126/stream") // Update the ESP32 stream URL
 
         handler.postDelayed(frameCaptureRunnable, frameCaptureInterval)
     }
@@ -104,6 +111,9 @@ class Esp32CamActivity : ComponentActivity() {
                         val reconstructedMask = reconstructMask(result)
                         val fireMaskBitmap = convertMaskToBitmap(reconstructedMask, webView.width, webView.height)
                         displayFireMask(fireMaskBitmap)
+                        if (fireDetected) {
+                            saveFireMaskToFirebase(result.fireMask);
+                        }
                     } else {
                         Log.d("FireDetection", "No fire detected. Hiding mask.")
                         displayFireMask(null) // Ẩn mask nếu không có lửa
@@ -158,6 +168,40 @@ class Esp32CamActivity : ComponentActivity() {
                 fireMaskImageView.setImageBitmap(null)
                 fireMaskImageView.visibility = View.GONE
             }
+        }
+    }
+
+    private fun saveFireMaskToFirebase(fireMask: List<Int>) {
+        // Create a map to store the fire mask data along with a timestamp
+        val fireMaskData: MutableMap<String, Any> = HashMap()
+        fireMaskData["fireMask"] = fireMask
+        fireMaskData["timestamp"] = System.currentTimeMillis()
+
+        // Generate a unique ID for the fire mask entry
+        val maskId = firebaseDatabase!!.push().key
+        if (maskId != null) {
+            // Save the fire mask data to Firebase under the "fire_masks" node
+            firebaseDatabase!!.child(maskId).setValue(fireMaskData)
+                .addOnSuccessListener { aVoid: Void? ->
+                    // Show a success message
+                    runOnUiThread {
+                        Toast.makeText(
+                            this,
+                            "Fire mask saved to Firebase",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+                .addOnFailureListener { e: Exception ->
+                    // Show an error message if saving fails
+                    runOnUiThread {
+                        Toast.makeText(
+                            this,
+                            "Failed to save fire mask: " + e.message,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
         }
     }
 

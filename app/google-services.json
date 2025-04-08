@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "232161478146",
+    "firebase_url": "https://esp32-cam-6a907-default-rtdb.firebaseio.com",
+    "project_id": "esp32-cam-6a907",
+    "storage_bucket": "esp32-cam-6a907.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:232161478146:android:422ac1f61121384524491b",
+        "android_client_info": {
+          "package_name": "com.example.camera"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQn8a6naHn8jqZlPqTV4hVOcc46pC8cDs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
