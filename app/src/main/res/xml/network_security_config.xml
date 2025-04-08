@@ -5,6 +5,6 @@
 <!--        <domain includeSubdomains="true">localhost</domain>-->
 <!--        <domain includeSubdomains="true">192.168.60.40</domain>-->
         <domain includeSubdomains="true">10.0.2.2</domain>
-        <domain includeSubdomains="true">f2ae-113-161-91-33.ngrok-free.app</domain>
+        <domain includeSubdomains="true">bd4a-115-78-100-76.ngrok-free.app/</domain>
     </domain-config>
 </network-security-config>
