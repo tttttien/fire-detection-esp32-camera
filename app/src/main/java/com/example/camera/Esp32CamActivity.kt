@@ -43,7 +43,7 @@ class Esp32CamActivity : ComponentActivity() {
 
         setupWebView()
 
-        webView.loadUrl("http://192.168.51.126/stream") // Update the ESP32 stream URL
+        webView.loadUrl("http://192.168.1.64/stream") // Update the ESP32 stream URL
 
         handler.postDelayed(frameCaptureRunnable, frameCaptureInterval)
     }
@@ -112,7 +112,7 @@ class Esp32CamActivity : ComponentActivity() {
                         val fireMaskBitmap = convertMaskToBitmap(reconstructedMask, webView.width, webView.height)
                         displayFireMask(fireMaskBitmap)
                         if (fireDetected) {
-                            saveFireMaskToFirebase(result.fireMask);
+                            saveFireMaskToFirebase(result);
                         }
                     } else {
                         Log.d("FireDetection", "No fire detected. Hiding mask.")
@@ -171,10 +171,12 @@ class Esp32CamActivity : ComponentActivity() {
         }
     }
 
-    private fun saveFireMaskToFirebase(fireMask: List<Int>) {
-        // Create a map to store the fire mask data along with a timestamp
+    private fun saveFireMaskToFirebase(fireResponse: FireResponse) {
+        // Create a map to store the fire mask data along with a timestamp, width, and height
         val fireMaskData: MutableMap<String, Any> = HashMap()
-        fireMaskData["fireMask"] = fireMask
+        fireMaskData["fireMask"] = fireResponse.fireMask
+        fireMaskData["width"] = fireResponse.width
+        fireMaskData["height"] = fireResponse.height
         fireMaskData["timestamp"] = System.currentTimeMillis()
 
         // Generate a unique ID for the fire mask entry
