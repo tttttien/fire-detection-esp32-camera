@@ -4,42 +4,58 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/bg_gradient"> <!-- Gradient nền 🔥 -->
+    android:background="@drawable/bg_gradient">
 
     <!-- Phần chứa fragment -->
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
-    <!-- Thanh button điều hướng -->
+    <!-- Thanh điều hướng -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="#121212"
-        android:padding="4dp">
+        android:background="@drawable/bottom_nav_gradient"
+        android:padding="6dp">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnMainScreen"
-            style="@style/ButtonStyle"
-            android:text="Màn hình chính"/>
+            style="@style/BottomNavButtonStyle"
+            android:text="Home"
+            app:icon="@android:drawable/ic_menu_view"
+            android:background="@drawable/gradient_selector"
+            app:iconGravity="top"
+            app:iconPadding="4dp" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnEsp32Cam"
-            style="@style/ButtonStyle"
-            android:text="Camera ESP32"/>
+            style="@style/BottomNavButtonStyle"
+            android:text="ESP32 Cam"
+            android:background="@drawable/gradient_selector"
+            app:icon="@android:drawable/ic_menu_camera"
+            app:iconGravity="top"
+            app:iconPadding="4dp" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPhoneCam"
-            style="@style/ButtonStyle"
-            android:text="Camera của đt"/>
+            style="@style/BottomNavButtonStyle"
+            android:text="Phone Cam"
+            app:icon="@android:drawable/ic_menu_camera"
+            android:background="@drawable/gradient_selector"
+            app:iconGravity="top"
+            app:iconPadding="4dp" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnFireSafety"
-            style="@style/ButtonStyleRed"
-            android:text="An toàn về lửa"/>
+            style="@style/BottomNavButtonStyle"
+            android:text="Safety"
+            app:icon="@android:drawable/ic_lock_idle_alarm"
+            android:background="@drawable/gradient_selector"
+            app:iconGravity="top"
+            app:iconPadding="4dp" />
     </LinearLayout>
 
 </LinearLayout>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Khi nhấn -->
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#88ffffff" /> <!-- lớp phủ sáng nhẹ khi nhấn -->
+        </shape>
+    </item>
+
+    <!-- Trạng thái bình thường -->
+    <item android:drawable="@drawable/bottom_nav_gradient" />
+</selector>
