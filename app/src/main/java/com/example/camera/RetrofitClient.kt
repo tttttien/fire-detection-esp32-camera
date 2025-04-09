@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
-    private const val BASE_URL = "https://006e-113-161-91-60.ngrok-free.app/"
+    private const val BASE_URL = "https://d658-113-161-91-60.ngrok-free.app/"
 
     // Tạo OkHttpClient với timeout tùy chỉnh
     private val okHttpClient = OkHttpClient.Builder()

@@ -59,7 +59,7 @@ class Esp32CamActivity : ComponentActivity() {
 
         NotificationHelper.createNotificationChannel(this)
 
-        webView.loadUrl("http://172.19.29.42/stream")
+        webView.loadUrl("http://192.168.51.126/stream")
         handler.postDelayed(frameCaptureRunnable, frameCaptureInterval)
     }
 
