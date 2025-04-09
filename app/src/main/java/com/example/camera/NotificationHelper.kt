@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -31,24 +32,24 @@ object NotificationHelper {
         }
     }
 
-    fun showFireDetectedNotification(context: Context) {
-        // Check for POST_NOTIFICATIONS permission (Android 13+)
+    fun showFireDetectedNotification(context: Context, snapshot: Bitmap) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val permissionGranted = ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.POST_NOTIFICATIONS
             ) == PackageManager.PERMISSION_GRANTED
 
-            if (!permissionGranted) {
-                // Permission not granted, skip showing notification
-                return
-            }
+            if (!permissionGranted) return
         }
 
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_dialog_alert)
             .setContentTitle("🔥 Fire Detected!")
-            .setContentText("Please check the ESP32-CAM feed immediately.")
+            .setContentText("Check the image to confirm.")
+            .setStyle(
+                NotificationCompat.BigPictureStyle()
+                    .bigPicture(snapshot)
+            )
             .setPriority(NotificationCompat.PRIORITY_HIGH)
 
         with(NotificationManagerCompat.from(context)) {

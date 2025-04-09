@@ -32,7 +32,7 @@ class Esp32CamActivity : ComponentActivity() {
     private lateinit var webView: WebView
     private lateinit var fireMaskImageView: ImageView
     private val handler = Handler(Looper.getMainLooper())
-    private val frameCaptureInterval: Long = 5000 // Capture every 5 seconds to reduce load
+    private val frameCaptureInterval: Long = 5000
 
     private val NOTIF_PERMISSION_CODE = 1001
 
@@ -92,11 +92,11 @@ class Esp32CamActivity : ComponentActivity() {
 
     private fun captureFrameFromWebView() {
         if (webView.width > 0 && webView.height > 0) {
-            val bitmap = Bitmap.createBitmap(webView.width, webView.height, Bitmap.Config.ARGB_8888)
-            val canvas = Canvas(bitmap)
+            val bitmapOriginal = Bitmap.createBitmap(webView.width, webView.height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmapOriginal)
             webView.draw(canvas)
-            val resizedBitmap = resizeBitmap(bitmap, 240, 240)
-            sendImageToServer(resizedBitmap)
+
+            sendImageToServer(bitmapOriginal)
         } else {
             Log.e("FrameCapture", "Invalid WebView size")
         }
@@ -106,10 +106,12 @@ class Esp32CamActivity : ComponentActivity() {
         return Bitmap.createScaledBitmap(bitmap, width, height, true)
     }
 
-    private fun sendImageToServer(bitmap: Bitmap) {
+    private fun sendImageToServer(bitmapOriginal: Bitmap) {
         val start = System.currentTimeMillis()
+
+        val resizedBitmap = resizeBitmap(bitmapOriginal, 240, 240)
         val stream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream)
+        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream)
         val byteArray = stream.toByteArray()
 
         val requestBody = byteArray.toRequestBody("image/jpeg".toMediaType())
@@ -126,7 +128,7 @@ class Esp32CamActivity : ComponentActivity() {
                         runOnUiThread {
                             Toast.makeText(this@Esp32CamActivity, "🔥 Fire detected!", Toast.LENGTH_LONG).show()
                         }
-                        NotificationHelper.showFireDetectedNotification(this@Esp32CamActivity)
+                        NotificationHelper.showFireDetectedNotification(this@Esp32CamActivity, bitmapOriginal)
                     }
 
                     if (result != null && result.fireMask.isNotEmpty()) {
