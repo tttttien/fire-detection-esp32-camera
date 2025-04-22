@@ -13,7 +13,20 @@
           "package_name": "com.example.camera"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "232161478146-sqcnncvej9ejm1bf770dpk7rdl0jv6jr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.camera",
+            "certificate_hash": "a667a87041b84a977666cc9ade68fbb70684c3f4"
+          }
+        },
+        {
+          "client_id": "232161478146-n37ka9kbf99a1solgeq0pfgrs8htl1n2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCQn8a6naHn8jqZlPqTV4hVOcc46pC8cDs"
@@ -21,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "232161478146-n37ka9kbf99a1solgeq0pfgrs8htl1n2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

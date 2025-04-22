@@ -1,24 +1,19 @@
 package com.example.camera
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import android.widget.ImageView
-import android.widget.Toast
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -27,14 +22,14 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.ByteArrayOutputStream
 
+
 class Esp32CamActivity : ComponentActivity() {
 
     private lateinit var webView: WebView
     private lateinit var fireMaskImageView: ImageView
     private val handler = Handler(Looper.getMainLooper())
-    private val frameCaptureInterval: Long = 5000
-
-    private val NOTIF_PERMISSION_CODE = 1001
+    private val frameCaptureInterval: Long = 2000 // Capture frame every 2 seconds
+    private var firebaseDatabase: DatabaseReference? = null // Firebase database reference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,23 +38,13 @@ class Esp32CamActivity : ComponentActivity() {
         webView = findViewById(R.id.webView)
         fireMaskImageView = findViewById(R.id.fireMaskImageView)
 
+        // Initialize Firebase Realtime Database
+        firebaseDatabase = FirebaseDatabase.getInstance().getReference("fire_masks");
+
         setupWebView()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-                != PackageManager.PERMISSION_GRANTED
-            ) {
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                    NOTIF_PERMISSION_CODE
-                )
-            }
-        }
+        webView.loadUrl("http://192.168.51.126/stream") // Update the ESP32 stream URL
 
-        NotificationHelper.createNotificationChannel(this)
-
-        webView.loadUrl("http://192.168.51.126/stream")
         handler.postDelayed(frameCaptureRunnable, frameCaptureInterval)
     }
 
@@ -85,6 +70,7 @@ class Esp32CamActivity : ComponentActivity() {
 
     private val frameCaptureRunnable = object : Runnable {
         override fun run() {
+            Log.d("FrameCapture", "Attempting to capture frame from WebView")
             captureFrameFromWebView()
             handler.postDelayed(this, frameCaptureInterval)
         }
@@ -92,26 +78,20 @@ class Esp32CamActivity : ComponentActivity() {
 
     private fun captureFrameFromWebView() {
         if (webView.width > 0 && webView.height > 0) {
-            val bitmapOriginal = Bitmap.createBitmap(webView.width, webView.height, Bitmap.Config.ARGB_8888)
-            val canvas = Canvas(bitmapOriginal)
+            val bitmap = Bitmap.createBitmap(webView.width, webView.height, Bitmap.Config.ARGB_8888)
+            val canvas = android.graphics.Canvas(bitmap)
             webView.draw(canvas)
-
-            sendImageToServer(bitmapOriginal)
+            Log.d("FrameCapture", "Captured frame successfully")
+            sendImageToServer(bitmap)
         } else {
-            Log.e("FrameCapture", "Invalid WebView size")
+            Log.e("FrameCapture", "WebView has invalid dimensions: Width=${webView.width}, Height=${webView.height}")
         }
     }
 
-    private fun resizeBitmap(bitmap: Bitmap, width: Int, height: Int): Bitmap {
-        return Bitmap.createScaledBitmap(bitmap, width, height, true)
-    }
-
-    private fun sendImageToServer(bitmapOriginal: Bitmap) {
-        val start = System.currentTimeMillis()
-
-        val resizedBitmap = resizeBitmap(bitmapOriginal, 240, 240)
+    private fun sendImageToServer(bitmap: Bitmap) {
+        Log.d("FireDetection", "Sending image to server")
         val stream = ByteArrayOutputStream()
-        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream)
         val byteArray = stream.toByteArray()
 
         val requestBody = byteArray.toRequestBody("image/jpeg".toMediaType())
@@ -119,34 +99,34 @@ class Esp32CamActivity : ComponentActivity() {
 
         RetrofitClient.apiService.detectFire(filePart).enqueue(object : Callback<FireResponse> {
             override fun onResponse(call: Call<FireResponse>, response: Response<FireResponse>) {
-                Log.d("FireDetection", "Request took ${System.currentTimeMillis() - start} ms")
                 if (response.isSuccessful) {
                     val result = response.body()
-                    val fireDetected = result?.fireDetected ?: false
+                    Log.d("FireDetection", "Server Response: ${response.body()}")
 
-                    if (fireDetected) {
-                        runOnUiThread {
-                            Toast.makeText(this@Esp32CamActivity, "🔥 Fire detected!", Toast.LENGTH_LONG).show()
-                        }
-                        NotificationHelper.showFireDetectedNotification(this@Esp32CamActivity, bitmapOriginal)
-                    }
+                    val fireDetected = result?.fireDetected ?: false
+                    Log.d("FireDetection", "Fire Detected: $fireDetected")
 
                     if (result != null && result.fireMask.isNotEmpty()) {
+                        Log.d("FireDetection", "Processing fire mask...")
                         val reconstructedMask = reconstructMask(result)
                         val fireMaskBitmap = convertMaskToBitmap(reconstructedMask, webView.width, webView.height)
                         displayFireMask(fireMaskBitmap)
+                        if (fireDetected) {
+                            saveFireMaskToFirebase(result.fireMask);
+                        }
                     } else {
-                        displayFireMask(null)
+                        Log.d("FireDetection", "No fire detected. Hiding mask.")
+                        displayFireMask(null) // Ẩn mask nếu không có lửa
                     }
                 } else {
-                    Log.e("FireDetection", "Server error: ${response.errorBody()?.string()}")
+                    Log.e("FireDetection", "Failed response: ${response.errorBody()?.string()}")
                 }
             }
 
             override fun onFailure(call: Call<FireResponse>, t: Throwable) {
-                Log.e("FireDetection", "Failed: ${t.localizedMessage}")
+                Log.e("FireDetection", "Error sending image: ${t.message}")
                 runOnUiThread {
-                    Toast.makeText(this@Esp32CamActivity, "Error: ${t.localizedMessage}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@Esp32CamActivity, "Error: ${t.message}", Toast.LENGTH_LONG).show()
                 }
             }
         })
@@ -161,13 +141,14 @@ class Esp32CamActivity : ComponentActivity() {
     private fun convertMaskToBitmap(fireMask: List<List<Int>>, webViewWidth: Int, webViewHeight: Int): Bitmap {
         val maskHeight = fireMask.size
         val maskWidth = fireMask[0].size
+
         val scaledBitmap = Bitmap.createBitmap(webViewWidth, webViewHeight, Bitmap.Config.ARGB_8888)
 
         for (y in 0 until webViewHeight) {
             for (x in 0 until webViewWidth) {
                 val maskX = (x * maskWidth) / webViewWidth
                 val maskY = (y * maskHeight) / webViewHeight
-                val pixelValue = if (fireMask[maskY][maskX] == 1) Color.RED else Color.TRANSPARENT
+                val pixelValue = if (fireMask[maskY][maskX] == 1) android.graphics.Color.RED else android.graphics.Color.TRANSPARENT
                 scaledBitmap.setPixel(x, y, pixelValue)
             }
         }
@@ -177,19 +158,56 @@ class Esp32CamActivity : ComponentActivity() {
     private fun displayFireMask(bitmap: Bitmap?) {
         runOnUiThread {
             if (bitmap != null) {
+                Log.d("FireMask", "Updating fire mask. Size: ${webView.width}x${webView.height}")
                 fireMaskImageView.layoutParams.width = webView.width
                 fireMaskImageView.layoutParams.height = webView.height
                 fireMaskImageView.setImageBitmap(bitmap)
                 fireMaskImageView.visibility = View.VISIBLE
             } else {
+                Log.d("FireMask", "No fire detected. Hiding mask.")
                 fireMaskImageView.setImageBitmap(null)
                 fireMaskImageView.visibility = View.GONE
             }
         }
     }
 
+    private fun saveFireMaskToFirebase(fireMask: List<Int>) {
+        // Create a map to store the fire mask data along with a timestamp
+        val fireMaskData: MutableMap<String, Any> = HashMap()
+        fireMaskData["fireMask"] = fireMask
+        fireMaskData["timestamp"] = System.currentTimeMillis()
+
+        // Generate a unique ID for the fire mask entry
+        val maskId = firebaseDatabase!!.push().key
+        if (maskId != null) {
+            // Save the fire mask data to Firebase under the "fire_masks" node
+            firebaseDatabase!!.child(maskId).setValue(fireMaskData)
+                .addOnSuccessListener { aVoid: Void? ->
+                    // Show a success message
+                    runOnUiThread {
+                        Toast.makeText(
+                            this,
+                            "Fire mask saved to Firebase",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+                .addOnFailureListener { e: Exception ->
+                    // Show an error message if saving fails
+                    runOnUiThread {
+                        Toast.makeText(
+                            this,
+                            "Failed to save fire mask: " + e.message,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacks(frameCaptureRunnable)
+        Log.d("Esp32CamActivity", "Activity destroyed, stopped frame capturing")
     }
 }
