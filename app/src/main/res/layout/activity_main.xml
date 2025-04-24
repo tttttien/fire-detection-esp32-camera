@@ -4,88 +4,76 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/bg_gradient">
-
+    android:background="@color/background">
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/headline"
         android:layout_width="match_parent"
         android:layout_height="67dp"
         android:text="Smart device"
         android:layout_marginTop="40dp"
         android:layout_marginStart="35dp"
-        android:textSize="24sp"/>
-    <!-- Sign In Card -->
-    <LinearLayout
-        android:id="@+id/sign_in_card"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_centerInParent="true"
-        android:orientation="vertical"
-        android:layout_margin="16dp"
-        android:background="@drawable/card_background"
-        android:gravity="center">
+        android:textSize="30sp"/>
 
-        <!-- Icon and Text -->
+    <LinearLayout
+        android:id="@+id/btnEsp32Cam"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:orientation="vertical"
+        android:background="@drawable/border">
+
         <ImageView
-            android:id="@+id/user_icon"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:src="@drawable/ic_user" />
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/cctv" />
 
         <TextView
-            android:id="@+id/description"
-            android:layout_width="wrap_content"
+            android:layout_width="65dp"
             android:layout_height="wrap_content"
-            android:text="Begin your smart life!"
+            android:layout_marginTop="8dp"
+            android:text="Camera"
             android:textColor="#FFFFFF"
-            android:layout_marginTop="8dp" />
+            android:textSize="16sp" />
 
-        <!-- Sign in button -->
-        <Button
-            android:id="@+id/sign_in_button"
-            android:layout_width="300dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="20dp"
-            android:text="Sign in"
-            android:backgroundTint="#2C7C7D"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/button_rounded" />
     </LinearLayout>
+
     <!-- Phần chứa fragment -->
+
+    <!-- Thanh điều hướng -->
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="473dp"
         android:layout_weight="1">
 
-
     </FrameLayout>
 
-    <!-- Thanh điều hướng -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@drawable/bottom_nav_gradient"
+        android:background="@color/button"
         android:padding="6dp">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnMainScreen"
             style="@style/BottomNavButtonStyle"
             android:text="Home"
+            android:textColor="#FFFFFF"
             app:icon="@android:drawable/ic_menu_view"
-            android:background="@drawable/gradient_selector"
             app:iconGravity="top"
             app:iconPadding="4dp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnEsp32Cam"
-            style="@style/BottomNavButtonStyle"
-            android:text="ESP32 Cam"
-            android:background="@drawable/gradient_selector"
-            app:icon="@android:drawable/ic_menu_camera"
-            app:iconGravity="top"
-            app:iconPadding="4dp" />
+<!--        <com.google.android.material.button.MaterialButton-->
+<!--            android:id="@+id/btnEsp32Cam"-->
+<!--            style="@style/BottomNavButtonStyle"-->
+<!--            android:text="ESP32 Cam"-->
+<!--            android:background="@drawable/gradient_selector"-->
+<!--            app:icon="@android:drawable/ic_menu_camera"-->
+<!--            app:iconGravity="top"-->
+<!--            app:iconPadding="4dp" />-->
 
 <!--        <com.google.android.material.button.MaterialButton-->
 <!--            android:id="@+id/btnPhoneCam"-->
@@ -100,8 +88,16 @@
             android:id="@+id/btnFireSafety"
             style="@style/BottomNavButtonStyle"
             android:text="Profile"
+            android:textColor="#FFFFFF"
             app:icon="@android:drawable/ic_lock_idle_alarm"
-            android:background="@drawable/gradient_selector"
+            app:iconGravity="top"
+            app:iconPadding="4dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/logout_button"
+            style="@style/BottomNavButtonStyle"
+            android:text="Logout"
+            android:textColor="#FFFFFF"
             app:iconGravity="top"
             app:iconPadding="4dp" />
 

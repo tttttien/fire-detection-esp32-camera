@@ -1,28 +1,5 @@
 package com.example.camera
 
-//import android.content.Intent
-//import android.os.Bundle
-//import android.widget.Button
-//import androidx.activity.ComponentActivity
-//
-//class MainActivity : ComponentActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_main)
-//
-////        setupButton(R.id.btnMainScreen) { /* Load màn hình chính */ }
-//        setupButton(R.id.btnEsp32Cam, Esp32CamActivity::class.java)
-//        setupButton(R.id.btnPhoneCam, PhoneCameraActivity::class.java)
-////        setupButton(R.id.btnFireSafety, FireSafetyActivity::class.java)
-//    }
-//
-//    private fun setupButton(buttonId: Int, activityClass: Class<*>? = null) {
-//        findViewById<Button>(buttonId).setOnClickListener {
-//            activityClass?.let { startActivity(Intent(this, it)) }
-//        }
-//    }
-//}
-
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -60,7 +37,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        val textView = findViewById<TextView>(R.id.name)
+        val textView = findViewById<TextView>(R.id.headline)
 
         val auth = Firebase.auth
         val user = auth.currentUser
@@ -80,11 +57,19 @@ class MainActivity : AppCompatActivity() {
             signOutAndStartSignInActivity()
         }
 
-
+        // Setup navigation buttons
+        //setupButton(R.id.btnEsp32Cam, Esp32CamActivity::class.java)
 
 
     }
 
+    private fun setupButton(buttonId: Int, activityClass: Class<*>? = null) {
+        findViewById<Button>(buttonId).setOnClickListener {
+            activityClass?.let {
+                startActivity(Intent(this, it))
+            }
+        }
+    }
 
     private fun signOutAndStartSignInActivity() {
         mAuth.signOut()
