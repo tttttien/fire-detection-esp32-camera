@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Theme for the Splash Screen -->
-    <style name="Theme.SplashScreen" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.SplashScreen" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_background</item> <!-- Background image for splash screen -->
         <item name="android:windowFullscreen">true</item> <!-- Enables fullscreen mode -->
         <item name="android:windowNoTitle">true</item> <!-- Removes the title bar -->
