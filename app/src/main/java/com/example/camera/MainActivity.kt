@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
+import android.widget.LinearLayout
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -57,17 +59,27 @@ class MainActivity : AppCompatActivity() {
             signOutAndStartSignInActivity()
         }
 
-        // Setup navigation buttons
-        //setupButton(R.id.btnEsp32Cam, Esp32CamActivity::class.java)
+        try {
+            // Setup navigation buttons
+            setupButton(R.id.btnEsp32Cam, Esp32CamActivity::class.java)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+        }
 
 
     }
 
     private fun setupButton(buttonId: Int, activityClass: Class<*>? = null) {
-        findViewById<Button>(buttonId).setOnClickListener {
-            activityClass?.let {
-                startActivity(Intent(this, it))
+        try {
+            findViewById<LinearLayout>(buttonId).setOnClickListener {
+                activityClass?.let {
+                    startActivity(Intent(this, it))
+                }
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(this, "Error setting up button: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
 
