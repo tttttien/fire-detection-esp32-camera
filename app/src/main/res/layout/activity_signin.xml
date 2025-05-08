@@ -1,54 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="@color/background"
+    android:background="@drawable/signin_bg"
     tools:context=".SignInActivity">
 
-
-    <!-- Sign In Card -->
-    <LinearLayout
-        android:id="@+id/sign_in_card"
+    <!-- Fixed Sign In Button -->
+    <Button
+        android:id="@+id/signInButton"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_centerInParent="true"
-        android:orientation="vertical"
-        android:layout_margin="16dp"
-        android:background="@color/sub_background"
-        android:gravity="center">
-
-        <!-- Icon and Text -->
-        <ImageView
-            android:id="@+id/user_icon"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:src="@drawable/ic_user" />
-
-        <TextView
-            android:id="@+id/description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Begin your smart life!"
-            android:textColor="@color/button"
-            android:layout_marginTop="8dp" />
-
-        <!-- Sign in button -->
-        <Button
-            android:id="@+id/signInButton"
-            android:layout_width="300dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="20dp"
-            android:text="Sign in"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/border" />
-    </LinearLayout>
-
-
-
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="123dp"
+        android:background="@drawable/signin_button_background"
+        android:drawableStart="@drawable/google_icon"
+        android:drawablePadding="8dp"
+        android:fontFamily="@font/montserrat"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:text="Sign in with Google"
+        android:textColor="#000000"
+        android:textFontWeight="500" />
 
 </RelativeLayout>
-
-      

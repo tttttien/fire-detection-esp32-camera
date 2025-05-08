@@ -14,6 +14,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.google.android.material.button.MaterialButton
 
 class MainActivity : AppCompatActivity() {
 
@@ -54,9 +55,9 @@ class MainActivity : AppCompatActivity() {
 
 
 // Inside onCreate() method
-        val sign_out_button = findViewById<Button>(R.id.logout_button)
-        sign_out_button.setOnClickListener {
-            signOutAndStartSignInActivity()
+        val profileButton = findViewById<Button>(R.id.btnProfile)
+        profileButton.setOnClickListener {
+            startActivity(Intent(this, ProfileActivity::class.java))
         }
 
         try {

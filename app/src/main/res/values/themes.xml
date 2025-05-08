@@ -8,12 +8,20 @@
     </style>
 
     <!-- Main application theme -->
-    <style name="Theme.Camera" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">#FF6F00</item> <!-- Primary color (Fire Orange) -->
-        <item name="colorPrimaryVariant">#E65100</item> <!-- Darker shade of primary color -->
-        <item name="colorOnPrimary">#FFFFFF</item> <!-- Text color on primary background -->
-        <item name="android:statusBarColor">#E65100</item> <!-- Status bar color -->
-        <item name="android:navigationBarColor">#000000</item> <!-- Navigation bar color -->
-        <item name="android:windowBackground">#FF6F00</item> <!-- Default background color -->
+    <style name="Theme.Camera" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Remove default colors to let layouts control their own colors -->
+        <item name="android:fontFamily">@font/montserrat</item>
+        <item name="fontFamily">@font/montserrat</item>
     </style>
+
+    <!-- Button Styles -->
+    <style name="ButtonStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:elevation">4dp</item>
+    </style>
+
+
 </resources>
