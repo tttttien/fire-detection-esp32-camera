@@ -1,10 +1,10 @@
 package com.example.camera.network
 
-import com.example.camera.model.LatestAlertResponse
 import retrofit2.Response
-import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface ApiService {
-    @GET("/latest-alert/")
-    suspend fun getLatestAlert(): Response<LatestAlertResponse>
+    @POST("toggle_detection")
+    suspend fun toggleDetection(@Query("enable") enable: Boolean): Response<Void>
 }
