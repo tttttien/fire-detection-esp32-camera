@@ -11,6 +11,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.example.camera.R
+
 object NotificationHelper {
     private const val CHANNEL_ID = "fire_alert_channel"
     private const val CHANNEL_NAME = "Fire Alert"
@@ -18,34 +19,40 @@ object NotificationHelper {
 
     fun createNotificationChannel(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val chan = NotificationChannel(
+            val channel = NotificationChannel(
                 CHANNEL_ID,
                 CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = CHANNEL_DESC
             }
-            val mgr = context.getSystemService(NotificationManager::class.java)
-            mgr.createNotificationChannel(chan)
+
+            val notificationManager =
+                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
         }
     }
 
     fun showFireDetectedNotification(context: Context, snapshot: Bitmap) {
-        // Android 13+ cần permission
+        // Android 13+ cần quyền POST_NOTIFICATIONS
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(
-                context, Manifest.permission.POST_NOTIFICATIONS
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
             ) != PackageManager.PERMISSION_GRANTED
-        ) return
+        ) {
+            return
+        }
 
-        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_fire_notification)   // <-- icon của bạn
+        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_fire_notification) // Đảm bảo icon này tồn tại
             .setContentTitle("🔥 Fire Detected!")
             .setContentText("Tap to view snapshot.")
             .setStyle(NotificationCompat.BigPictureStyle().bigPicture(snapshot))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
+            .build()
 
-        NotificationManagerCompat.from(context).notify(1001, builder.build())
+        NotificationManagerCompat.from(context).notify(1001, notification)
     }
 }

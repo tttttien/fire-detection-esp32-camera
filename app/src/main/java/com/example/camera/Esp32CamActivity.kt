@@ -3,8 +3,8 @@ package com.example.camera
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.drawable.Drawable
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -23,6 +23,10 @@ import com.bumptech.glide.request.transition.Transition
 import com.example.camera.network.RetrofitClient
 import com.example.camera.utils.NotificationHelper
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.ByteArrayOutputStream
 
 class Esp32CamActivity : AppCompatActivity() {
 
@@ -33,7 +37,7 @@ class Esp32CamActivity : AppCompatActivity() {
     private lateinit var switchFireDetection: Switch
 
     private var fireDetectionMode = false
-    private val serverUrl = "http://192.168.72.40:8000"
+    private val serverUrl = "https://0bd0-113-161-91-223.ngrok-free.app"
     private val handler = Handler()
     private val fireCheckInterval: Long = 3000L // 3 giây
 
@@ -50,10 +54,8 @@ class Esp32CamActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_esp32_cam)
 
-        // Tạo Notification Channel
         NotificationHelper.createNotificationChannel(this)
 
-        // Xin quyền POST_NOTIFICATIONS nếu Android 13+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(
                 this, Manifest.permission.POST_NOTIFICATIONS
@@ -65,7 +67,6 @@ class Esp32CamActivity : AppCompatActivity() {
             )
         }
 
-        // Ánh xạ view
         webView = findViewById(R.id.webView)
         btnBack = findViewById(R.id.btnBack)
         btnReload = findViewById(R.id.btnReload)
@@ -74,19 +75,13 @@ class Esp32CamActivity : AppCompatActivity() {
 
         setupWebView()
 
-        // Nút Back
         btnBack.setOnClickListener { onBackPressed() }
-
-        // Nút Reload WebView
         btnReload.setOnClickListener { webView.reload() }
-
-        // Nút Home
         btnHome.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
 
-        // Bật/Tắt Fire Detection
         switchFireDetection.setOnCheckedChangeListener { _, isChecked ->
             fireDetectionMode = isChecked
             toggleFireDetection(isChecked)
@@ -122,21 +117,60 @@ class Esp32CamActivity : AppCompatActivity() {
     }
 
     private fun checkFireStatus() {
-        lifecycleScope.launch {
-            try {
-                val response = RetrofitClient.apiService.getLatestAlert()
-                if (response.isSuccessful) {
-                    val alert = response.body()
-                    if (alert?.fire_detected == true && alert.image_url != null) {
-                        fetchSnapshotAndNotify(alert.image_url)
+        captureWebViewSnapshot { bitmap ->
+            if (bitmap == null) {
+                Log.e("FireCheck", "Failed to capture snapshot")
+                return@captureWebViewSnapshot
+            }
+
+            lifecycleScope.launch {
+                try {
+                    val filePart = bitmapToMultipart(bitmap, "frame.jpg")
+                    val response = RetrofitClient.apiService.uploadFrame(filePart)
+                    if (response.isSuccessful) {
+                        val alert = response.body()
+                        if (alert?.fire_detected == true && alert.image_url != null) {
+                            val fullUrl = if (alert.image_url.startsWith("http")) {
+                                alert.image_url
+                            } else {
+                                "$serverUrl/${alert.image_url}"
+                            }
+                            Log.d("FireCheck", "Fire detected! Image URL: $fullUrl")
+                            fetchSnapshotAndNotify(fullUrl)
+                        } else {
+                            Log.d("FireCheck", "No fire detected")
+                        }
+                    } else {
+                        Log.e("FireCheck", "Server error: ${response.code()}")
                     }
-                } else {
-                    Log.e("FireCheck", "Server error: ${response.code()}")
+                } catch (e: Exception) {
+                    Log.e("FireCheck", "Error checking fire status: ${e.message}")
                 }
-            } catch (e: Exception) {
-                Log.e("FireCheck", "Failed to fetch fire status: ${e.message}")
             }
         }
+    }
+
+    // Capture snapshot từ WebView (chụp ảnh màn hình webview)
+    private fun captureWebViewSnapshot(callback: (Bitmap?) -> Unit) {
+        webView.post {
+            try {
+                val bitmap = Bitmap.createBitmap(webView.width, webView.height, Bitmap.Config.ARGB_8888)
+                val canvas = android.graphics.Canvas(bitmap)
+                webView.draw(canvas)
+                callback(bitmap)
+            } catch (e: Exception) {
+                Log.e("FireCheck", "Error capturing snapshot: ${e.message}")
+                callback(null)
+            }
+        }
+    }
+
+    private fun bitmapToMultipart(bitmap: Bitmap, name: String): MultipartBody.Part {
+        val bos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, bos)
+        val bitmapData = bos.toByteArray()
+        val requestFile = bitmapData.toRequestBody("image/jpeg".toMediaTypeOrNull())
+        return MultipartBody.Part.createFormData("file", name, requestFile)
     }
 
     private fun fetchSnapshotAndNotify(url: String) {
@@ -145,15 +179,9 @@ class Esp32CamActivity : AppCompatActivity() {
             .load(url)
             .into(object : CustomTarget<Bitmap>() {
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    NotificationHelper.showFireDetectedNotification(
-                        this@Esp32CamActivity,
-                        resource
-                    )
+                    NotificationHelper.showFireDetectedNotification(this@Esp32CamActivity, resource)
                 }
-
-                override fun onLoadCleared(placeholder: Drawable?) {
-                    // No-op
-                }
+                override fun onLoadCleared(placeholder: Drawable?) {}
             })
     }
 
