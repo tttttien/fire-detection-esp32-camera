@@ -12,7 +12,7 @@
         android:id="@+id/tvTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="🔥 ESP32 Fire Detection"
+        android:text="ESP32 Fire Detection"
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="#333"
@@ -80,8 +80,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
-            android:backgroundTint="#FF6B6B"
-            android:textColor="#fff"
+            android:backgroundTint="#464646"
+            android:textColor="#FFFFFF"
             android:text="Back" />
 
         <Button
@@ -91,7 +91,7 @@
             android:layout_weight="1"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
-            android:backgroundTint="#4ECDC4"
+            android:backgroundTint="#464646"
             android:textColor="#fff"
             android:text="Reload" />
 
@@ -101,7 +101,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
-            android:backgroundTint="#1A535C"
+            android:backgroundTint="#464646"
             android:textColor="#fff"
             android:text="Home" />
     </LinearLayout>
