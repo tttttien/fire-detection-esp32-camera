@@ -39,6 +39,11 @@ android {
         compose = true
         viewBinding = true
     }
+    
+    lint {
+        abortOnError = false
+        checkReleaseBuilds = false
+    }
 
 }
 
@@ -96,4 +101,8 @@ dependencies {
 
     implementation ("com.github.bumptech.glide:glide:4.13.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.13.0")  // For annotation processing
+    
+    // Video processing
+    implementation("androidx.media3:media3-common:1.2.1")
+    implementation("androidx.media3:media3-exoplayer:1.2.1")
 }

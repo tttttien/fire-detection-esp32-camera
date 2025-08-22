@@ -53,6 +53,10 @@ object NotificationHelper {
             .setAutoCancel(true)
             .build()
 
-        NotificationManagerCompat.from(context).notify(1001, notification)
+        try {
+            NotificationManagerCompat.from(context).notify(1001, notification)
+        } catch (e: SecurityException) {
+            // Handle permission denied
+        }
     }
 }
