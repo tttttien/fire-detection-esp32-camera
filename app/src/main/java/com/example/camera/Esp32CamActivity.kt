@@ -550,7 +550,7 @@ class Esp32CamActivity : AppCompatActivity() {
                     }
                     
                     if (deniedPermissions.isEmpty()) {
-                        Toast.makeText(this, "All permissions granted! You can now record videos.", Toast.LENGTH_LONG).show()
+                        //Toast.makeText(this, "All permissions granted! You can now record videos.", Toast.LENGTH_LONG).show()
                     } else {
                         val grantedCount = grantedPermissions.size
                         val totalCount = permissions.size
