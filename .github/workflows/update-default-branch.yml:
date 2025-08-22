@@ -1,0 +1,22 @@
+name: Auto update default branch
+on:
+  push:
+    branches:
+      - 'v*.*.*'  # Chỉ trigger với branch dạng v1.2.3
+
+jobs:
+  update-default-branch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      administration: write
+    
+    steps:
+      - name: Update default branch
+        run: |
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          gh api repos/${{ github.repository }} \
+            --method PATCH \
+            --field default_branch="$BRANCH_NAME"
+        env:
+          GH_TOKEN: ${{ github.token }}
