@@ -1,17 +1,14 @@
-name: Auto update default branch
+name: Auto Update Default Branch
 on:
   push:
     branches:
-      - 'v*'  # Đơn giản hơn, match mọi branch v*
+      - 'v*'
 
 jobs:
   update-default-branch:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      administration: write
-      metadata: read
-    
+      contents: write
     steps:
       - name: Update default branch
         run: |
