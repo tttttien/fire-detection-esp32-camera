@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="123dp"
+        android:layout_marginBottom="185dp"
         android:background="@drawable/signin_button_background"
         android:drawableStart="@drawable/google_icon"
         android:drawablePadding="8dp"
