@@ -1,4 +1,4 @@
-package com.example.camera
+package com.example.camera_fire
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

@@ -1,4 +1,4 @@
-package com.example.camera
+package com.example.camera_fire
 
 import org.junit.Test
 

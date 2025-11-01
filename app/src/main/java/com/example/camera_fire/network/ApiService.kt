@@ -1,6 +1,6 @@
-package com.example.camera.network
+package com.example.camera_fire.network
 
-import com.example.camera.model.LatestAlertResponse
+import com.example.camera_fire.model.LatestAlertResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Multipart

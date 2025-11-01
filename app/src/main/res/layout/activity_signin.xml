@@ -6,18 +6,15 @@
     android:background="@drawable/signin_bg"
     tools:context=".SignInActivity">
 
-    <!-- Fixed Sign In Button -->
     <Button
         android:id="@+id/signInButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="8dp"
         android:layout_marginBottom="185dp"
         android:background="@drawable/signin_button_background"
         android:drawableStart="@drawable/google_icon"
         android:drawablePadding="8dp"
-        android:fontFamily="@font/montserrat"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:text="Sign in with Google"

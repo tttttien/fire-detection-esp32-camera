@@ -1,4 +1,4 @@
-package com.example.camera.network
+package com.example.camera_fire.network
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

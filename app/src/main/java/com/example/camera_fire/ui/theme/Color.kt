@@ -1,4 +1,4 @@
-package com.example.camera.ui.theme
+package com.example.camera_fire.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

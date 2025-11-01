@@ -1,4 +1,4 @@
-package com.example.camera.utils
+package com.example.camera_fire.utils
 
 import android.Manifest
 import android.app.NotificationChannel
@@ -10,7 +10,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import com.example.camera.R
+import com.example.camera_fire.R
 
 object NotificationHelper {
     private const val CHANNEL_ID = "fire_alert_channel"
