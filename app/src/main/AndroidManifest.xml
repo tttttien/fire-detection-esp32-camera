@@ -41,6 +41,13 @@
         <activity
             android:name=".ProfileActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".HistoryActivity"
+            android:exported="false" />
+        <activity android:name=".VideoPlayerActivity"
+            android:exported="false"
+            android:screenOrientation="sensorLandscape" />
     </application>
 
 </manifest>

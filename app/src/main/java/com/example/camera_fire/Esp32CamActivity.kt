@@ -44,7 +44,7 @@ class Esp32CamActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEsp32CamBinding
 
     private var fireDetectionMode = false
-    private val serverUrl = "https://1faa3e5675d0.ngrok-free.app"
+    private val serverUrl = "https://forceless-josette-unluckier.ngrok-free.dev"
     private val handler = Handler(Looper.getMainLooper())
     private val fireCheckInterval: Long = 3000L // 3 giây
 
@@ -87,6 +87,10 @@ class Esp32CamActivity : AppCompatActivity() {
         binding.btnHome.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
+        }
+
+        binding.btnHistory.setOnClickListener { 
+            startActivity(Intent(this, HistoryActivity::class.java))
         }
 
         binding.switchFireDetection.setOnCheckedChangeListener { _, isChecked ->

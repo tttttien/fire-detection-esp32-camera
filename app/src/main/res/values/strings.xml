@@ -1,11 +1,5 @@
 <resources>
-    <string name="app_name">CameraXApp</string>
-    <string name="take_photo">Take Photo</string>
-    <string name="start_capture">Start Capture</string>
-    <string name="stop_capture">Stop Capture</string>
-    <string name="sign_in">Sign up with Google</string>
-    <!-- res/values/strings.xml -->
-
+    <string name="app_name">camera-fire</string>
+    <string name="event_id_format">ID: %1$d</string>
     <string name="web_client_id">903059256002-v2kvtmm5oqa47g5g3gikqt9g70eete5n.apps.googleusercontent.com</string>
-
 </resources>
