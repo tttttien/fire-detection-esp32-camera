@@ -9,45 +9,116 @@
     <TextView
         android:id="@+id/headline"
         android:layout_width="match_parent"
-        android:layout_height="118dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="35dp"
         android:layout_marginTop="40dp"
-        android:text="Smart device"
-        android:textSize="30sp" />
+        android:text="Fire Detection CCTV"
+        android:textColor="#FF0000"
+        android:textSize="36sp" />
+
+    <TextView
+        android:id="@+id/subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="4dp"
+        android:text="Monitor your spaces"
+        android:textColor="#808080"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/devices_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:text="Devices"
+        android:textColor="#404040"
+        android:textSize="24sp" />
 
     <LinearLayout
         android:id="@+id/btnEsp32Cam"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="16dp"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="20dp"
-        android:orientation="vertical"
-        android:background="@drawable/border"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/rounded_background"
+        android:orientation="horizontal"
+        android:padding="16dp"
         android:clickable="true"
         android:focusable="true">
 
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/cctv" />
+            android:src="@drawable/cctv"
+             />
 
         <TextView
-            android:layout_width="65dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Camera"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp" />
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"
+            android:text="Home Camera"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:layout_gravity="center_vertical" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:src="@drawable/circle"
+                android:layout_gravity="center_vertical" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="Online"
+                android:textColor="#00FF00"
+                android:textSize="14sp"
+                android:layout_gravity="center_vertical" />
+
+<!--            <ImageView-->
+<!--                android:layout_width="20dp"-->
+<!--                android:layout_height="20dp"-->
+<!--                android:src="@drawable/flame_icon"-->
+<!--                android:layout_marginStart="16dp"-->
+<!--                android:layout_gravity="center_vertical" />-->
+
+<!--&lt;!&ndash;            <TextView&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_width="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_height="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_marginStart="4dp"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:text="No alerts"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:textColor="#FF0000"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:textSize="14sp"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_gravity="center_vertical" />&ndash;&gt;-->
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=">"
+            android:textColor="#808080"
+            android:textSize="24sp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="8dp" />
+
     </LinearLayout>
 
-    <!-- Phần chứa fragment -->
-
-    <!-- Thanh điều hướng -->
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="473dp"
+        android:layout_height="0dp"
         android:layout_weight="1">
 
     </FrameLayout>
@@ -56,33 +127,37 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@color/button"
-        android:padding="6dp">
+        android:background="#FFFFFF"
+        android:padding="8dp"
+        android:gravity="center">
 
         <Button
             android:id="@+id/btnMainScreen"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:layout_weight="1"
             android:text="Home"
-            android:textColor="#FFFFFF"
+            android:textColor="#404040"
             android:textSize="12sp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:background="?attr/selectableItemBackground" />
+            android:drawableTop="@drawable/home_icon"
+            android:drawableTint="#FF0000"
+            android:drawablePadding="4dp"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center" />
 
         <Button
             android:id="@+id/btnProfile"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:layout_weight="1"
-            android:text="Profile"
-            android:textColor="#FFFFFF"
+            android:text="Me"
+            android:textColor="#404040"
             android:textSize="12sp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
+            android:drawableTop="@drawable/person_icon"
+            android:drawableTint="#FF0000"
+            android:drawablePadding="4dp"
             android:background="?attr/selectableItemBackground"
-            android:drawableTint="#FFFFFF" />
+            android:gravity="center" />
 
     </LinearLayout>
 
