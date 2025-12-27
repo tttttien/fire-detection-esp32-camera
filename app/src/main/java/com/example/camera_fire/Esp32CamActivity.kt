@@ -71,9 +71,15 @@ class Esp32CamActivity : AppCompatActivity() {
             }
         }
     }
-
+    private var cameraId: Int = -1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        cameraId = intent.getIntExtra("camera_id", -1)
+        if (cameraId == -1) {
+            Toast.makeText(this, "Camera không hợp lệ", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
         binding = ActivityEsp32CamBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -109,7 +115,7 @@ class Esp32CamActivity : AppCompatActivity() {
     private fun setupWebView() {
         binding.webView.settings.javaScriptEnabled = true
         binding.webView.webViewClient = WebViewClient()
-        binding.webView.loadUrl("$serverUrl/video_feed")
+        binding.webView.loadUrl("$serverUrl/video_feed/$cameraId")
     }
 
     private fun toggleFireDetection(enable: Boolean) {

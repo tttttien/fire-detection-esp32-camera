@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity() {
 
                             cameraView.setOnClickListener {
                                 val intent = Intent(this@MainActivity, Esp32CamActivity::class.java)
-                                intent.putExtra("camera_index", camera.camera_index)
+                                intent.putExtra("camera_id", camera.camera_id)
                                 intent.putExtra("camera_label", camera.label)
                                 startActivity(intent)
                             }
@@ -136,6 +136,7 @@ class MainActivity : AppCompatActivity() {
 // Đảm bảo tên thuộc tính khớp với tên cột trong bảng 'cameras' của bạn
 @Serializable
 data class Camera(
+    val camera_id: Int,
     val owner_id: String,
     val camera_index: Int,
     val label: String,
