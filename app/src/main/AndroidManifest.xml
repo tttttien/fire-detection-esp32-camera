@@ -48,6 +48,9 @@
         <activity android:name=".VideoPlayerActivity"
             android:exported="false"
             android:screenOrientation="sensorLandscape" />
+        <!-- Khai báo AddCameraActivity -->
+        <activity android:name=".AddCameraActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

@@ -36,8 +36,19 @@
         android:textColor="#404040"
         android:textSize="24sp" />
 
+    <!-- Container for dynamically added cameras -->
     <LinearLayout
-        android:id="@+id/btnEsp32Cam"
+        android:id="@+id/camerasContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp" />
+
+    <!-- New button for adding camera -->
+    <LinearLayout
+        android:id="@+id/btnAddCamera"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -52,57 +63,18 @@
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/cctv"
-             />
+            android:src="@drawable/ic_add"
+            app:tint="#FF0000" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="16dp"
-            android:text="Home Camera"
+            android:text="Add New Camera"
             android:textColor="#000000"
             android:textSize="18sp"
             android:layout_gravity="center_vertical" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center_vertical">
-
-            <ImageView
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:src="@drawable/circle"
-                android:layout_gravity="center_vertical" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:text="Online"
-                android:textColor="#00FF00"
-                android:textSize="14sp"
-                android:layout_gravity="center_vertical" />
-
-<!--            <ImageView-->
-<!--                android:layout_width="20dp"-->
-<!--                android:layout_height="20dp"-->
-<!--                android:src="@drawable/flame_icon"-->
-<!--                android:layout_marginStart="16dp"-->
-<!--                android:layout_gravity="center_vertical" />-->
-
-<!--&lt;!&ndash;            <TextView&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_width="wrap_content"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_height="wrap_content"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_marginStart="4dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:text="No alerts"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:textColor="#FF0000"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:textSize="14sp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_gravity="center_vertical" />&ndash;&gt;-->
-
-        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
