@@ -92,14 +92,20 @@ class HistoryActivity : AppCompatActivity() {
                 val (cCreatedAt, cId) = cursor?.split("|")?.let {
                     if (it.size == 2) it[0] to it[1].toLongOrNull() else null to null
                 } ?: (null to null)
-
+                val cameraId = intent.getIntExtra("camera_id", -1)
+                // In ra để kiểm tra trong Logcat
+//                Log.d("HistoryActivity", "📸 Kiểm tra Camera ID nhận được: $cameraId")
                 // RPC params as JsonObject (KHÔNG dùng Map<*, *>)
                 val params = buildJsonObject {
-                    put("p_type", JsonPrimitive(eventType))          // "frame" | "video"
+                    put("p_type", JsonPrimitive(eventType))
                     cCreatedAt?.let { put("p_cursor_created_at", JsonPrimitive(it)) }
                     cId?.let        { put("p_cursor_id",          JsonPrimitive(it)) }
                     put("p_limit", JsonPrimitive(pageSize))
-                    // Nếu muốn lọc theo camera cụ thể, thêm: put("p_camera_id", JsonPrimitive(cameraId))
+
+                    // ✅ PHẢI CÓ DÒNG NÀY ĐỂ TRUYỀN ID XUỐNG HÀM TRÊN
+                    if (cameraId != -1) {
+                        put("p_camera_id", JsonPrimitive(cameraId))
+                    }
                 }
 
                 val rows: List<FireEvent> = Supabase.client

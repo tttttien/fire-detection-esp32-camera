@@ -97,7 +97,19 @@ class Esp32CamActivity : AppCompatActivity() {
 
         binding.btnHistory.setOnClickListener { 
             startActivity(Intent(this, HistoryActivity::class.java))
+            intent.putExtra("camera_id", cameraId)
         }
+        binding.btnHistory.setOnClickListener {
+            // 1. Tạo đối tượng Intent mới và đặt tên (ví dụ: moveHistory)
+            val moveHistory = Intent(this, HistoryActivity::class.java)
+
+            // 2. Nạp dữ liệu vào đối tượng moveHistory này
+            moveHistory.putExtra("camera_id", cameraId)
+
+            // 3. Lúc này mới bắt đầu chuyển màn hình
+            startActivity(moveHistory)
+        }
+
 
         binding.switchFireDetection.setOnCheckedChangeListener { _, isChecked ->
             fireDetectionMode = isChecked
