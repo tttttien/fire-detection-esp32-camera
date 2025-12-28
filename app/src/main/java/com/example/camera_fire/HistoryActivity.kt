@@ -93,16 +93,15 @@ class HistoryActivity : AppCompatActivity() {
                     if (it.size == 2) it[0] to it[1].toLongOrNull() else null to null
                 } ?: (null to null)
                 val cameraId = intent.getIntExtra("camera_id", -1)
-                // In ra để kiểm tra trong Logcat
-//                Log.d("HistoryActivity", "📸 Kiểm tra Camera ID nhận được: $cameraId")
-                // RPC params as JsonObject (KHÔNG dùng Map<*, *>)
+                // Log.d("HistoryActivity", "📸 Camera ID received: $cameraId")
+                // RPC params as JsonObject (DO NOT use Map<*, *>)
                 val params = buildJsonObject {
                     put("p_type", JsonPrimitive(eventType))
                     cCreatedAt?.let { put("p_cursor_created_at", JsonPrimitive(it)) }
                     cId?.let        { put("p_cursor_id",          JsonPrimitive(it)) }
                     put("p_limit", JsonPrimitive(pageSize))
 
-                    // ✅ PHẢI CÓ DÒNG NÀY ĐỂ TRUYỀN ID XUỐNG HÀM TRÊN
+                    // ✅ MUST HAVE THIS LINE TO PASS ID TO THE FUNCTION ABOVE
                     if (cameraId != -1) {
                         put("p_camera_id", JsonPrimitive(cameraId))
                     }

@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@MainActivity, "Lỗi khi tải camera: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@MainActivity, "Error when loading cameras: ${e.message}", Toast.LENGTH_LONG).show()
                     e.printStackTrace()
                 }
             }

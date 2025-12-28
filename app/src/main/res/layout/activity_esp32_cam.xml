@@ -8,7 +8,7 @@
     tools:context=".Esp32CamActivity"
     android:background="#f2f2f2">
 
-    <!-- Tiêu đề -->
+    <!-- Title -->
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="0dp"
@@ -23,11 +23,25 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:padding="16dp" />
 
-    <!-- WebView và Fire Mask overlay -->
+    <!-- Switch for fire detection -->
+    <Switch
+        android:id="@+id/switchFireDetection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enable Fire Detection"
+        android:checked="true"
+        android:textColor="#555"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="4dp"
+        android:padding="16dp" />
+
+    <!-- WebView and Fire Mask overlay -->
     <FrameLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        app:layout_constraintTop_toBottomOf="@id/switchFireDetection"
         app:layout_constraintBottom_toTopOf="@+id/buttonLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -47,85 +61,71 @@
             android:alpha="0.4" />
     </FrameLayout>
 
-    <!-- Switch bật/tắt fire detection -->
-    <Switch
-        android:id="@+id/switchFireDetection"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Enable Fire Detection"
-        android:checked="true"
-        android:textColor="#555"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="4dp"
-        android:padding="8dp" />
-
     <!-- Button group -->
     <LinearLayout
         android:id="@+id/buttonLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center"
-        android:padding="12dp"
+        android:gravity="center_vertical"
+        android:padding="4dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:weightSum="5">
-
-        <Button
-            android:id="@+id/btnBack"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginEnd="4dp"
-            android:backgroundTint="#464646"
-            android:textColor="#FFFFFF"
-            android:text="Back" />
+        android:weightSum="4">
 
         <Button
             android:id="@+id/btnReload"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:layout_weight="1"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
+            android:layout_marginHorizontal="4dp"
             android:backgroundTint="#464646"
             android:textColor="#fff"
-            android:text="Reload" />
+            android:text="Reload"
+            android:textSize="14sp"
+            app:cornerRadius="8dp"
+            android:elevation="4dp" />
 
         <Button
             android:id="@+id/btnRecord"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:layout_weight="1"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
+            android:layout_marginHorizontal="4dp"
             android:backgroundTint="#464646"
             android:textColor="#fff"
-            android:text="Record" />
+            android:text="Record"
+            android:textSize="14sp"
+            app:cornerRadius="8dp"
+            android:elevation="4dp" />
 
         <Button
             android:id="@+id/btnHome"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:layout_weight="1"
-            android:layout_marginStart="4dp"
+            android:layout_marginHorizontal="4dp"
             android:backgroundTint="#464646"
             android:textColor="#fff"
-            android:text="Home" />
+            android:text="Home"
+            android:textSize="14sp"
+            app:cornerRadius="8dp"
+            android:elevation="4dp" />
 
         <Button
             android:id="@+id/btnHistory"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:layout_weight="1"
-            android:layout_marginStart="4dp"
+            android:layout_marginHorizontal="4dp"
             android:backgroundTint="#464646"
             android:textColor="#fff"
-            android:text="History" />
+            android:text="History"
+            android:textSize="14sp"
+            app:cornerRadius="8dp"
+            android:elevation="4dp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

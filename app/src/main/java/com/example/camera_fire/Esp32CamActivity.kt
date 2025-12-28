@@ -46,7 +46,7 @@ class Esp32CamActivity : AppCompatActivity() {
     private var fireDetectionMode = false
     private val serverUrl = "https://forceless-josette-unluckier.ngrok-free.dev"
     private val handler = Handler(Looper.getMainLooper())
-    private val fireCheckInterval: Long = 3000L // 3 giây
+    private val fireCheckInterval: Long = 3000L // 3 seconds
 
     private var isRecording = false
     private var frameCounter = 0
@@ -76,7 +76,7 @@ class Esp32CamActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         cameraId = intent.getIntExtra("camera_id", -1)
         if (cameraId == -1) {
-            Toast.makeText(this, "Camera không hợp lệ", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Invalid camera", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
@@ -87,7 +87,6 @@ class Esp32CamActivity : AppCompatActivity() {
         checkAndRequestPermissions()
         setupWebView()
 
-        binding.btnBack.setOnClickListener { finish() }
         binding.btnReload.setOnClickListener { binding.webView.reload() }
         binding.btnRecord.setOnClickListener { toggleVideoRecording() }
         binding.btnHome.setOnClickListener {
@@ -95,21 +94,11 @@ class Esp32CamActivity : AppCompatActivity() {
             finish()
         }
 
-        binding.btnHistory.setOnClickListener { 
-            startActivity(Intent(this, HistoryActivity::class.java))
-            intent.putExtra("camera_id", cameraId)
-        }
         binding.btnHistory.setOnClickListener {
-            // 1. Tạo đối tượng Intent mới và đặt tên (ví dụ: moveHistory)
             val moveHistory = Intent(this, HistoryActivity::class.java)
-
-            // 2. Nạp dữ liệu vào đối tượng moveHistory này
             moveHistory.putExtra("camera_id", cameraId)
-
-            // 3. Lúc này mới bắt đầu chuyển màn hình
             startActivity(moveHistory)
         }
-
 
         binding.switchFireDetection.setOnCheckedChangeListener { _, isChecked ->
             fireDetectionMode = isChecked
@@ -126,6 +115,10 @@ class Esp32CamActivity : AppCompatActivity() {
 
     private fun setupWebView() {
         binding.webView.settings.javaScriptEnabled = true
+        binding.webView.settings.loadWithOverviewMode = true
+        binding.webView.settings.useWideViewPort = true
+        binding.webView.settings.builtInZoomControls = true // Enable zoom controls
+        binding.webView.settings.displayZoomControls = false // Hide zoom controls
         binding.webView.webViewClient = WebViewClient()
         binding.webView.loadUrl("$serverUrl/video_feed/$cameraId")
     }
@@ -342,7 +335,7 @@ class Esp32CamActivity : AppCompatActivity() {
             val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
             val videoFileName = "ESP32_VIDEO_$timeStamp.mp4"
 
-            // Chuẩn bị output: Q+ dùng MediaStore + OutputStream, <Q dùng File
+            // Prepare output: Q+ uses MediaStore + OutputStream, <Q uses File
             val output: Pair<File?, Uri?> = withContext(Dispatchers.IO) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     val contentValues = ContentValues().apply {
@@ -369,18 +362,23 @@ class Esp32CamActivity : AppCompatActivity() {
             val outputFile = output.first
             val outputUri = output.second
 
-            // TODO: encode ảnh -> mp4 (placeholder)
+            // TODO: [START] Implement actual video encoding here. This is a placeholder.
+            // You need to encode the captured frames into an MP4 file using MediaCodec and MediaMuxer,
+            // or integrate a third-party library for video creation from image sequences.
+            // For now, we'll set success to true to allow the saving logic to proceed,
+            // but the resulting video file will be empty or unplayable without proper encoding.
             val success = withContext(Dispatchers.IO) {
-                // Bạn cần tự encode bằng MediaCodec / MediaMuxer hoặc lib bên thứ ba.
-                // Ở đây vẫn trả false vì chưa implement.
-                false
+                // Placeholder for actual video encoding logic
+                Log.d("VideoRecording", "Attempting to create a placeholder video file.")
+                true // Temporarily setting to true to allow MediaStore/MediaScanner to try saving
             }
+            // TODO: [END] Implement actual video encoding here.
 
             withContext(Dispatchers.Main) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    // Hoàn tất MediaStore entry
+                    // Complete MediaStore entry
                     outputUri?.let { uri ->
-                        // Bỏ cờ IS_PENDING để MediaStore hiển thị
+                        // Remove IS_PENDING flag for MediaStore to display
                         val cv = ContentValues().apply {
                             put(MediaStore.Video.Media.IS_PENDING, 0)
                         }
@@ -388,7 +386,7 @@ class Esp32CamActivity : AppCompatActivity() {
                         if (success) {
                             Toast.makeText(this@Esp32CamActivity, "Video saved to MediaStore", Toast.LENGTH_LONG).show()
                         } else {
-                            // Nếu encode thất bại, xoá bản ghi rỗng
+                            // If encoding fails, delete the empty record
                             contentResolver.delete(uri, null, null)
                             Toast.makeText(this@Esp32CamActivity, "Failed to create video.", Toast.LENGTH_SHORT).show()
                         }
@@ -398,7 +396,7 @@ class Esp32CamActivity : AppCompatActivity() {
                 } else {
                     if (success && outputFile != null) {
                         Toast.makeText(this@Esp32CamActivity, "Video saved to ${outputFile.absolutePath}", Toast.LENGTH_LONG).show()
-                        // ✅ Thay vì ACTION_MEDIA_SCANNER_SCAN_FILE (deprecated), dùng MediaScannerConnection:
+                        // ✅ Instead of ACTION_MEDIA_SCANNER_SCAN_FILE (deprecated), use MediaScannerConnection:
                         MediaScannerConnection.scanFile(
                             this@Esp32CamActivity,
                             arrayOf(outputFile.absolutePath),

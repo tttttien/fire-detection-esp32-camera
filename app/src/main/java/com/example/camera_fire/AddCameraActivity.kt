@@ -35,7 +35,7 @@ class AddCameraActivity : AppCompatActivity() {
             if (cameraIndex.isNotBlank() && label.isNotBlank()) {
                 saveCameraToSupabase(cameraIndex, label)
             } else {
-                Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please enter all information", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -46,27 +46,27 @@ class AddCameraActivity : AppCompatActivity() {
                 val userId = supabase.auth.currentUserOrNull()?.id
                 if (userId == null) {
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(this@AddCameraActivity, "Bạn chưa đăng nhập", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@AddCameraActivity, "You are not logged in", Toast.LENGTH_SHORT).show()
                     }
                     return@launch
                 }
 
-                // Dữ liệu camera cần insert vào bảng 'cameras'
+                // Camera data to insert into the 'cameras' table
                 val cameraData = mapOf(
-                    "owner_id" to userId, // Đã đổi từ "user_id" sang "owner_id"
+                    "owner_id" to userId, // Changed from "user_id" to "owner_id"
                     "camera_index" to cameraIndex,
                     "label" to label
                 )
 
-                supabase.postgrest["cameras"].insert(cameraData) // Tên bảng là "cameras" như trong lỗi
+                supabase.postgrest["cameras"].insert(cameraData) // Table name is "cameras" as in the error
 
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@AddCameraActivity, "Thêm camera thành công!", Toast.LENGTH_SHORT).show()
-                    finish() // Đóng Activity sau khi lưu thành công
+                    Toast.makeText(this@AddCameraActivity, "Add camera successfully!", Toast.LENGTH_SHORT).show()
+                    finish() // Close the Activity after successful save
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@AddCameraActivity, "Lỗi khi thêm camera: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@AddCameraActivity, "Error adding camera: ${e.message}", Toast.LENGTH_LONG).show()
                     e.printStackTrace()
                 }
             }
