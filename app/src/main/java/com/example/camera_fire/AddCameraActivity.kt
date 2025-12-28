@@ -3,6 +3,7 @@ package com.example.camera_fire
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import io.github.jan.supabase.auth.auth
@@ -17,6 +18,7 @@ class AddCameraActivity : AppCompatActivity() {
     private lateinit var etCameraIndex: EditText
     private lateinit var etLabel: EditText
     private lateinit var btnSaveCamera: Button
+    private lateinit var btnBack: ImageView
 
     private val supabase get() = Supabase.client
 
@@ -27,6 +29,11 @@ class AddCameraActivity : AppCompatActivity() {
         etCameraIndex = findViewById(R.id.etCameraIndex)
         etLabel = findViewById(R.id.etLabel)
         btnSaveCamera = findViewById(R.id.btnSaveCamera)
+        btnBack = findViewById(R.id.btnBack)
+
+        btnBack.setOnClickListener {
+            finish() // Quay về activity trước
+        }
 
         btnSaveCamera.setOnClickListener {
             val cameraIndex = etCameraIndex.text.toString()
@@ -51,18 +58,17 @@ class AddCameraActivity : AppCompatActivity() {
                     return@launch
                 }
 
-                // Camera data to insert into the 'cameras' table
                 val cameraData = mapOf(
-                    "owner_id" to userId, // Changed from "user_id" to "owner_id"
+                    "owner_id" to userId,
                     "camera_index" to cameraIndex,
                     "label" to label
                 )
 
-                supabase.postgrest["cameras"].insert(cameraData) // Table name is "cameras" as in the error
+                supabase.postgrest["cameras"].insert(cameraData)
 
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@AddCameraActivity, "Add camera successfully!", Toast.LENGTH_SHORT).show()
-                    finish() // Close the Activity after successful save
+                    Toast.makeText(this@AddCameraActivity, "Camera added successfully!", Toast.LENGTH_SHORT).show()
+                    finish()
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {

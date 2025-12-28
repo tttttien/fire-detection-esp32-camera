@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.camera_fire.databinding.ActivityMainBinding
 import io.github.jan.supabase.auth.auth
@@ -15,9 +16,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.jsonPrimitive
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,39 +29,28 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // ✅ Lấy user hiện tại từ Supabase Auth (v3)
         val user = supabase.auth.currentUserOrNull()
-
         if (user != null) {
             val userName = user.userMetadata?.get("name")?.jsonPrimitive?.content ?: "User"
             binding.headline.text = "Welcome, $userName"
             loadCameras()
         } else {
-            // Nếu chưa đăng nhập → điều hướng về SignInActivity
             startActivity(Intent(this, SignInActivity::class.java))
             finish()
             return
         }
 
-        // Nút mở trang hồ sơ
         binding.btnProfile.setOnClickListener {
             startActivity(Intent(this, ProfileActivity::class.java))
         }
 
-        // Nút thêm camera mới
         binding.btnAddCamera.setOnClickListener {
             startActivity(Intent(this, AddCameraActivity::class.java))
         }
-
-        // Nút đăng xuất (nếu có thêm trong layout)
-//        binding.btnLogout?.setOnClickListener {
-//            signOutAndStartSignInActivity()
-//        }
     }
 
     override fun onResume() {
         super.onResume()
-        // Tải lại danh sách camera khi quay lại MainActivity
         val user = supabase.auth.currentUserOrNull()
         if (user != null) {
             loadCameras()
@@ -71,26 +60,19 @@ class MainActivity : AppCompatActivity() {
     private fun loadCameras() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val userId = supabase.auth.currentUserOrNull()?.id
-                if (userId == null) {
-                    withContext(Dispatchers.Main) {
-                        // Toast.makeText(this@MainActivity, "Bạn chưa đăng nhập", Toast.LENGTH_SHORT).show()
-                    }
-                    return@launch
-                }
+                val userId = supabase.auth.currentUserOrNull()?.id ?: return@launch
 
                 val response = supabase.postgrest["cameras"]
-                    .select { filter { eq("owner_id", userId) } } // Lấy các camera có user_id khớp
+                    .select { filter { eq("owner_id", userId) } }
 
-                val cameras = response.decodeList<Camera>() // Decode sang danh sách Camera
+                val cameras = response.decodeList<Camera>()
 
                 withContext(Dispatchers.Main) {
-                    binding.camerasContainer.removeAllViews() // Xóa các view cũ trước khi thêm mới
+                    binding.camerasContainer.removeAllViews()
 
                     if (cameras.isEmpty()) {
-                        // Hiển thị thông báo nếu không có camera nào
                         val noCameraText = TextView(this@MainActivity).apply {
-                            text = "Chưa có camera nào được thêm. Hãy thêm một camera mới!"
+                            text = "No cameras have been added yet. Please add a new camera!"
                             textSize = 16f
                             setTextColor(resources.getColor(R.color.red, theme))
                             setPadding(32, 32, 32, 32)
@@ -98,15 +80,30 @@ class MainActivity : AppCompatActivity() {
                         binding.camerasContainer.addView(noCameraText)
                     } else {
                         cameras.forEach { camera ->
-                            val cameraView = LayoutInflater.from(this@MainActivity).inflate(R.layout.item_camera, binding.camerasContainer, false) as LinearLayout
+                            val cameraView = LayoutInflater.from(this@MainActivity)
+                                .inflate(R.layout.item_camera, binding.camerasContainer, false) as LinearLayout
                             cameraView.findViewById<TextView>(R.id.cameraLabel).text = camera.label
 
+                            // Click to open camera
                             cameraView.setOnClickListener {
                                 val intent = Intent(this@MainActivity, Esp32CamActivity::class.java)
                                 intent.putExtra("camera_id", camera.camera_id)
                                 intent.putExtra("camera_label", camera.label)
                                 startActivity(intent)
                             }
+
+                            // Add delete button logic (assume there's an ImageView with id deleteIcon)
+                            cameraView.findViewById<ImageView>(R.id.deleteIcon)?.setOnClickListener {
+                                AlertDialog.Builder(this@MainActivity)
+                                    .setTitle("Delete Camera")
+                                    .setMessage("Are you sure you want to delete this camera?")
+                                    .setPositiveButton("Yes") { _, _ ->
+                                        deleteCamera(camera.camera_id)
+                                    }
+                                    .setNegativeButton("No", null)
+                                    .show()
+                            }
+
                             binding.camerasContainer.addView(cameraView)
                         }
                     }
@@ -120,9 +117,26 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun deleteCamera(cameraId: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = supabase.postgrest["cameras"]
+                    .delete { filter { eq("camera_id", cameraId) } }
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@MainActivity, "Camera deleted", Toast.LENGTH_SHORT).show()
+                    loadCameras()
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@MainActivity, "Failed to delete camera: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
     private fun signOutAndStartSignInActivity() {
         CoroutineScope(Dispatchers.IO).launch {
-            supabase.auth.signOut() // ✅ API v3
+            supabase.auth.signOut()
             withContext(Dispatchers.Main) {
                 val intent = Intent(this@MainActivity, SignInActivity::class.java)
                 startActivity(intent)
@@ -132,8 +146,6 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-// Data class để dễ dàng decode dữ liệu từ Supabase
-// Đảm bảo tên thuộc tính khớp với tên cột trong bảng 'cameras' của bạn
 @Serializable
 data class Camera(
     val camera_id: Int,
