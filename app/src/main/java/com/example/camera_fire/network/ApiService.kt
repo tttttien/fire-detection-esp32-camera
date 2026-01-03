@@ -19,4 +19,8 @@ interface ApiService {
     suspend fun uploadFrame(
         @Part file: MultipartBody.Part
     ): Response<LatestAlertResponse>
+    @POST("register_token")
+    suspend fun registerToken(
+        @retrofit2.http.Body data: Map<String, String>
+    ): Response<Map<String, String>>
 }

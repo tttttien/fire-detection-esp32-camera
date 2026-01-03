@@ -18,6 +18,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.jsonPrimitive
+import com.example.camera_fire.network.RetrofitClient
+import com.google.firebase.messaging.FirebaseMessaging
+import android.util.Log
+import android.os.Build
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import android.content.pm.PackageManager
+import android.Manifest
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,6 +42,8 @@ class MainActivity : AppCompatActivity() {
             val userName = user.userMetadata?.get("name")?.jsonPrimitive?.content ?: "User"
             binding.headline.text = "Welcome, $userName"
             loadCameras()
+            registerFCMToken() // Đăng ký token báo cháy
+            requestNotificationPermission() // Xin quyền thông báo (Android 13+)
         } else {
             startActivity(Intent(this, SignInActivity::class.java))
             finish()
@@ -141,6 +151,43 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this@MainActivity, SignInActivity::class.java)
                 startActivity(intent)
                 finish()
+            }
+        }
+    }
+
+    private fun registerFCMToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("FCM", "Fetching FCM registration token failed", task.exception)
+                return@addOnCompleteListener
+            }
+
+            val token = task.result
+            Log.d("FCM", "Current token: $token")
+            
+            // Gửi token lên server qua Retrofit
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val response = RetrofitClient.apiService.registerToken(mapOf("token" to token))
+                    if (response.isSuccessful) {
+                        Log.d("FCM", "Token updated on server successfully")
+                    }
+                } catch (e: Exception) {
+                    Log.e("FCM", "Error updating token on server", e)
+                }
+            }
+        }
+    }
+
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    1001
+                )
             }
         }
     }
