@@ -87,6 +87,10 @@ class SignInActivity : AppCompatActivity() {
                 }
 
                 Toast.makeText(this@SignInActivity, "Sign-in thành công", Toast.LENGTH_SHORT).show()
+                
+                // Register FCM token after successful login
+                registerFCMToken()
+                
                 goToMain()
 
             } catch (e: GetCredentialException) {
@@ -95,6 +99,33 @@ class SignInActivity : AppCompatActivity() {
                 Toast.makeText(this@SignInActivity, "ID token parse lỗi: ${e.message}", Toast.LENGTH_LONG).show()
             } catch (e: Exception) {
                 Toast.makeText(this@SignInActivity, "Lỗi khác: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+    
+    private fun registerFCMToken() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val token = com.google.android.gms.tasks.Tasks.await(
+                    com.google.firebase.messaging.FirebaseMessaging.getInstance().token
+                )
+                val userId = supabase.auth.currentUserOrNull()?.id
+                
+                android.util.Log.d("SignInActivity", "Registering token for user: $userId")
+                
+                if (userId != null) {
+                    val apiService = com.example.camera_fire.network.RetrofitClient.apiService
+                    val response = apiService.registerToken(
+                        mapOf("token" to token, "user_id" to userId)
+                    )
+                    if (response.isSuccessful) {
+                        android.util.Log.d("SignInActivity", "✅ Token registered successfully")
+                    } else {
+                        android.util.Log.e("SignInActivity", "❌ Failed to register token: ${response.code()}")
+                    }
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("SignInActivity", "Error registering FCM token", e)
             }
         }
     }

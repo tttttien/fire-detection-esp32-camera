@@ -23,4 +23,9 @@ interface ApiService {
     suspend fun registerToken(
         @retrofit2.http.Body data: Map<String, String>
     ): Response<Map<String, String>>
+    
+    @POST("unregister_token")
+    suspend fun unregisterToken(
+        @retrofit2.http.Body data: Map<String, String>
+    ): Response<Map<String, String>>
 }

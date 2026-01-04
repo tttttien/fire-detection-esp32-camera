@@ -10,8 +10,10 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.camera_fire.MainActivity
 import com.example.camera_fire.R
+import com.example.camera_fire.Supabase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import io.github.jan.supabase.auth.auth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -41,12 +43,31 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // Sử dụng RetrofitClient để gửi token
         CoroutineScope(Dispatchers.IO).launch {
             try {
+                // Get user_id from Supabase auth session
+                val currentUser = Supabase.client.auth.currentUserOrNull()
+                Log.d("FCM", "Current user: $currentUser")
+                
+                val userId = currentUser?.id
+                Log.d("FCM", "User ID from auth: $userId")
+                
+                if (userId == null) {
+                    Log.w("FCM", "User not logged in, skipping token registration")
+                    return@launch
+                }
+                
                 val apiService = RetrofitClient.apiService
-                val response = apiService.registerToken(mapOf("token" to token))
+                val requestData = mapOf(
+                    "token" to token,
+                    "user_id" to userId  // ✅ Include user_id as string
+                )
+                
+                Log.d("FCM", "Sending registration request: $requestData")
+                
+                val response = apiService.registerToken(requestData)
                 if (response.isSuccessful) {
-                    Log.d("FCM", "Token registered successfully on server")
+                    Log.d("FCM", "Token registered successfully for user $userId")
                 } else {
-                    Log.e("FCM", "Failed to register token: ${response.code()}")
+                    Log.e("FCM", "Failed to register token: ${response.code()} - ${response.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
                 Log.e("FCM", "Error registering token", e)

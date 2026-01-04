@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.tasks.Tasks
 import io.github.jan.supabase.auth.auth      // ✅ auth của v3
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +38,16 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun signOutAndStartSignInActivity() {
         CoroutineScope(Dispatchers.IO).launch {
+            try {
+                // Unregister FCM token before logout to prevent notification leaks
+                val token = Tasks.await(com.google.firebase.messaging.FirebaseMessaging.getInstance().token)
+                val apiService = com.example.camera_fire.network.RetrofitClient.apiService
+                apiService.unregisterToken(mapOf("token" to token))
+                android.util.Log.d("ProfileActivity", "Token unregistered on logout")
+            } catch (e: Exception) {
+                android.util.Log.e("ProfileActivity", "Failed to unregister token", e)
+            }
+            
             supabase.auth.signOut() // ✅ API v3
             val intent = Intent(this@ProfileActivity, SignInActivity::class.java)
             startActivity(intent)
