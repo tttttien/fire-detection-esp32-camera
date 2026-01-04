@@ -11,13 +11,15 @@ import retrofit2.http.Query
 interface ApiService {
     @POST("toggle_detection")
     suspend fun toggleDetection(
+        @Query("camera_id") cameraId: Int,
         @Query("enable") enable: Boolean
     ): Response<Void>
 
     @Multipart
     @POST("upload_frame")
     suspend fun uploadFrame(
-        @Part file: MultipartBody.Part
+        @Part file: MultipartBody.Part,
+        @Query("camera_id") cameraId: Int
     ): Response<LatestAlertResponse>
     @POST("register_token")
     suspend fun registerToken(

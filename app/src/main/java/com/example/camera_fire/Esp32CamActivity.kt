@@ -126,7 +126,7 @@ class Esp32CamActivity : AppCompatActivity() {
     private fun toggleFireDetection(enable: Boolean) {
         lifecycleScope.launch {
             try {
-                val response = RetrofitClient.apiService.toggleDetection(enable)
+                val response = RetrofitClient.apiService.toggleDetection(cameraId, enable)
                 if (!response.isSuccessful) {
                     Log.e("Esp32Cam", "Toggle failed: ${response.code()}")
                 }
@@ -146,7 +146,7 @@ class Esp32CamActivity : AppCompatActivity() {
             lifecycleScope.launch {
                 try {
                     val filePart = bitmapToMultipart(bitmap, "frame.jpg")
-                    val response = RetrofitClient.apiService.uploadFrame(filePart)
+                    val response = RetrofitClient.apiService.uploadFrame(filePart, cameraId)
                     if (response.isSuccessful) {
                         val alert = response.body()
                         if (alert?.fire_detected == true && alert.image_url != null) {
